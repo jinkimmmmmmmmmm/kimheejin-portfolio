@@ -26,6 +26,7 @@
 }
 
 /* 기본 */
+html { scroll-behavior: smooth; }
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -553,7 +554,7 @@ h2::before {
 }
 .video-title { margin: 14px 0 0; max-width: 760px; }
 
-/* 연락처 */
+/* 연락처 & 문의하기 */
 .contact-list {
   list-style: none;
   margin: 0;
@@ -573,6 +574,387 @@ h2::before {
 .contact-list .ico { width: 24px; height: 24px; }
 .contact-list a { font-weight: 600; }
 .contact-list a::after { content: ""; position: absolute; inset: 0; }
+
+/* ===== 문의하기 (Inquiry) ===== */
+.inquiry {
+  border-top: 1px dashed var(--main-light);
+  padding-block: clamp(64px, 8vw, 104px);
+}
+.inquiry-intro {
+  margin: 0 0 clamp(28px, 4vw, 44px);
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  max-width: 52em;
+}
+
+.inquiry-grid {
+  display: grid;
+  gap: clamp(24px, 3.5vw, 36px);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+@media (min-width: 860px) {
+  .inquiry-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.22fr);
+  }
+}
+
+/* 카드 공통 */
+.inquiry-card {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: 5px 5px 0 var(--paper-deep), 5px 5px 0 1px var(--line);
+  padding: clamp(24px, 3.8vw, 36px);
+}
+
+/* 상단 마스킹 테이프 장식 */
+.inquiry-info-card::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 28px;
+  width: 58px;
+  height: 20px;
+  background: var(--tape);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  border-radius: 2px;
+  transform: rotate(-1.5deg);
+  z-index: 2;
+}
+
+.inquiry-form-card::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 28px;
+  width: 60px;
+  height: 20px;
+  background: rgba(238, 87, 42, 0.2);
+  border: 1px solid rgba(238, 87, 42, 0.32);
+  border-radius: 2px;
+  transform: rotate(2deg);
+  z-index: 2;
+}
+
+.inquiry-card-header {
+  margin-bottom: 20px;
+}
+.inquiry-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  margin-bottom: 8px;
+}
+.inquiry-card-title {
+  margin: 0;
+  font-size: clamp(20px, 2.5vw, 24px);
+  color: var(--main);
+}
+
+.inquiry-info-desc {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+/* 이메일 박스 */
+.inquiry-email-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  box-shadow: 2px 2px 0 var(--paper-deep);
+}
+.inquiry-email-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.inquiry-email-label .ico-sm {
+  stroke: var(--muted);
+}
+.inquiry-email-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.inquiry-email-link {
+  font-size: clamp(16px, 2vw, 18px);
+  font-weight: 700;
+  color: var(--main);
+  text-decoration: none;
+  word-break: break-all;
+}
+.inquiry-email-link:hover {
+  text-decoration: underline;
+}
+.inquiry-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.inquiry-copy-btn:hover {
+  background: var(--main);
+  color: #FFFFFF;
+  border-color: var(--main);
+}
+.inquiry-copy-btn:hover svg {
+  stroke: #FFFFFF;
+}
+
+/* 안내 타이틀 공통 */
+.inquiry-guide-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--main);
+}
+.inquiry-guide-title .ico-mini {
+  stroke: var(--main);
+}
+
+/* 태그 목록 */
+.inquiry-guide {
+  margin-bottom: 22px;
+}
+.inquiry-tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.inquiry-tags li {
+  padding: 5px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  font-size: 0.84rem;
+  color: var(--muted);
+  box-shadow: 1px 1px 0 var(--paper-deep);
+}
+
+/* 채널 목록 */
+.inquiry-channels {
+  margin-bottom: 20px;
+}
+.inquiry-channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.inquiry-channel-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 var(--paper-deep);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, color 0.15s;
+}
+.inquiry-channel-chip-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.inquiry-channel-chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--main);
+  color: var(--main);
+  box-shadow: 2px 4px 0 var(--paper-deep);
+}
+
+/* 안내 문구 */
+.inquiry-notice {
+  padding: 12px 14px;
+  background: #F4EFE6;
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--accent);
+}
+.inquiry-notice p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* 폼 스타일 */
+.inquiry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--main);
+}
+.required {
+  color: #DC2626;
+  font-weight: 800;
+}
+.form-control {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--main);
+  box-shadow: 0 0 0 2px var(--main-soft);
+}
+.form-control::placeholder {
+  color: #A09D94;
+  font-size: 0.9rem;
+}
+.form-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.6;
+}
+.form-select-wrap {
+  position: relative;
+}
+.form-select-wrap select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2352504A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* 폼 버튼 영역 */
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+.inquiry-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--main);
+  cursor: pointer;
+  flex: 1;
+  min-width: 180px;
+}
+.button-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 13px 22px;
+  background: var(--bg);
+  color: var(--main);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--paper-deep);
+  transition: all 0.2s;
+}
+.button-outline:hover {
+  border-color: var(--main);
+  background: var(--paper);
+}
+.form-helper {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* 알림 토스트 */
+.inquiry-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: var(--main);
+  color: #FFFFFF;
+  padding: 13px 26px;
+  border-radius: var(--r-sm);
+  font-size: 0.92rem;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  z-index: 1000;
+}
+.inquiry-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
 
 /* 바닥글 */
 .footer {
