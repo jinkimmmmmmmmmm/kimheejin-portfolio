@@ -1,0 +1,8 @@
+{
+  "name": "kimheejin-portfolio",
+  "version": "1.0.0",
+  "description": "김희진 커뮤니케이션 디자인 강사 포트폴리오 웹사이트",
+  "scripts": {
+    "start": "node -e \"console.log('Static site with Vercel serverless function')\""
+  }
+}

@@ -53,6 +53,52 @@ try {
             $rawPath = "/index.html"
         }
 
+        # /api/send 요청 처리 (Resend 로컬 연동)
+        if ($rawPath -eq "/api/send") {
+            if ($request.HttpMethod -eq "OPTIONS") {
+                $response.StatusCode = 200
+                $response.Headers.Add("Access-Control-Allow-Origin", "*")
+                $response.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS")
+                $response.Headers.Add("Access-Control-Allow-Headers", "Content-Type")
+                $response.Close()
+                continue
+            }
+            try {
+                $reader = New-Object System.IO.StreamReader($request.InputStream, [System.Text.Encoding]::UTF8)
+                $bodyText = $reader.ReadToEnd()
+                $reader.Close()
+
+                $tempFile = [System.IO.Path]::GetTempFileName()
+                [System.IO.File]::WriteAllText($tempFile, $bodyText, [System.Text.Encoding]::UTF8)
+
+                $runNodeCmd = "const fs=require('fs');const handler=require('./api/send.js');const raw=fs.readFileSync(process.argv[1],'utf8').replace(/^\uFEFF/,'');const b=JSON.parse(raw);const req={method:'POST',body:b};const res={status:c=>({json:d=>console.log(JSON.stringify({status:c,data:d}))}),setHeader:()=>{}};handler(req,res);"
+                $nodeOut = & node -e $runNodeCmd $tempFile
+                Remove-Item $tempFile -ErrorAction SilentlyContinue
+
+                $jsonObj = $nodeOut | ConvertFrom-Json
+                $statusCode = if ($jsonObj.status) { [int]$jsonObj.status } else { 200 }
+                $dataJson = if ($jsonObj.data) { $jsonObj.data | ConvertTo-Json -Compress } else { "{}" }
+                $outBytes = [System.Text.Encoding]::UTF8.GetBytes($dataJson)
+
+                $response.StatusCode = $statusCode
+                $response.Headers.Add("Access-Control-Allow-Origin", "*")
+                $response.ContentType = "application/json; charset=utf-8"
+                $response.ContentLength64 = $outBytes.Length
+                $response.OutputStream.Write($outBytes, 0, $outBytes.Length)
+            } catch {
+                $response.StatusCode = 500
+                $errObj = @{ error = $_.Exception.Message }
+                $outBytes = [System.Text.Encoding]::UTF8.GetBytes(($errObj | ConvertTo-Json -Compress))
+                $response.Headers.Add("Access-Control-Allow-Origin", "*")
+                $response.ContentType = "application/json; charset=utf-8"
+                $response.ContentLength64 = $outBytes.Length
+                $response.OutputStream.Write($outBytes, 0, $outBytes.Length)
+            } finally {
+                $response.Close()
+            }
+            continue
+        }
+
         $relPath = $rawPath.TrimStart("/\").Replace("/", [System.IO.Path]::DirectorySeparatorChar)
         $filePath = [System.IO.Path]::GetFullPath([System.IO.Path]::Combine($Directory, $relPath))
 

@@ -409,17 +409,22 @@
 
           <!-- 전송 버튼 영역 -->
           <div class="form-actions">
-            <a class="button inquiry-submit-btn" id="open-chat-btn" href="https://open.kakao.com/o/sxvsycSi" target="_blank" rel="noopener noreferrer">
+            <button type="submit" class="button inquiry-submit-btn" id="submit-inquiry-btn">
+              <svg class="ico-sm" aria-hidden="true" focusable="false"><use href="#i-send"></use></svg>
+              <span>문의 내용 전송하기</span>
+            </button>
+            <a class="button button-outline" id="open-chat-btn" href="https://open.kakao.com/o/sxvsycSi" target="_blank" rel="noopener noreferrer">
               <svg class="ico-sm" aria-hidden="true" focusable="false"><use href="#i-chat"></use></svg>
-              <span>카카오톡 오픈채팅으로 문의하기</span>
+              <span>카카오톡 오픈채팅</span>
             </a>
             <button type="button" class="button-outline" id="copy-form-btn">
               <svg class="ico-sm" aria-hidden="true" focusable="false"><use href="#i-copy"></use></svg>
-              <span>내용 복사하기</span>
+              <span>내용 복사</span>
             </button>
           </div>
           <p class="form-helper">
-            ※ 위 양식을 작성 후 [내용 복사하기]를 누르시면 문의 내용이 복사되며, [카카오톡 오픈채팅으로 문의하기]를 통해 1:1 오픈채팅방에서 바로 상담받으실 수 있습니다.
+            ※ [문의 내용 전송하기] 클릭 시 작성하신 내용이 강사 이메일로 안전하게 즉시 전송됩니다.<br>
+            ※ 실시간 상담을 원하시는 경우 [카카오톡 오픈채팅]으로 언제든 1:1 대화가 가능합니다.
           </p>
         </form>
       </div>
@@ -552,7 +557,7 @@
         });
       }
 
-      // 3. 오픈채팅 문의하기 버튼 클릭 시
+      // 3. 오픈채팅 버튼 클릭 시 (작성 내용이 있으면 복사 후 이동)
       var openChatBtn = document.getElementById('open-chat-btn');
       if (openChatBtn) {
         openChatBtn.addEventListener('click', function () {
@@ -563,16 +568,55 @@
         });
       }
 
-      // 폼 엔터 제출 시 오픈채팅 링크 열기
+      // 4. 문의 폼 전송 (Resend 이메일 발송 /api/send)
       var form = document.getElementById('inquiry-form');
+      var submitBtn = document.getElementById('submit-inquiry-btn');
       if (form) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
           var data = getFormData();
-          if (data.name || data.contact || data.content) {
-            copyTextToClipboard(data.formatted, '✓ 작성하신 내용이 복사되었습니다! 오픈채팅방에 붙여넣어(Ctrl+V) 문의해 주세요.');
+          if (!data.name || !data.contact || !data.content) {
+            showToast('⚠️ 성함, 회신 연락처, 문의 내용을 모두 입력해 주세요.');
+            return;
           }
-          window.open('https://open.kakao.com/o/sxvsycSi', '_blank');
+
+          var origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>전송 중...</span>';
+          }
+          showToast('⏳ 문의 내용을 안전하게 전송하고 있습니다...');
+
+          fetch('/api/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          })
+          .then(function (res) {
+            return res.json().then(function (json) {
+              return { ok: res.ok, status: res.status, json: json };
+            });
+          })
+          .then(function (result) {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = origBtnHtml;
+            }
+            if (result.ok && result.json && result.json.success) {
+              showToast('✓ 문의가 성공적으로 전송되었습니다! 정성껏 검토 후 연락드리겠습니다.');
+              form.reset();
+            } else {
+              var errMsg = (result.json && result.json.error) ? result.json.error : '전송에 실패했습니다.';
+              showToast('⚠️ ' + errMsg + ' (내용 복사 후 카카오톡으로 전달해 주세요)');
+            }
+          })
+          .catch(function (err) {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = origBtnHtml;
+            }
+            showToast('⚠️ 전송 서버에 연결할 수 없습니다. [내용 복사] 후 카카오톡으로 전달해 주세요.');
+          });
         });
       }
     })();

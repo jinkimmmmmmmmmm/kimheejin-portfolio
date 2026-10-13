@@ -1,0 +1,9 @@
+# 환경 변수 (API 키 보호)
+.env
+.env.local
+.env.*.local
+
+# 의존성 및 로그
+node_modules/
+npm-debug.log*
+*.log
