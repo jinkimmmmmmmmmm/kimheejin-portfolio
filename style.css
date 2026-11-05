@@ -557,45 +557,106 @@ h2::before {
 /* 작업물 */
 .work-grid {
   display: grid;
-  gap: clamp(26px, 3.5vw, 40px);
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: clamp(20px, 3vw, 32px);
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
 }
-.work img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  object-position: center;
-  padding: 10px;
-  background: var(--paper);
+@media (max-width: 720px) {
+  .work-grid { grid-template-columns: 1fr; }
+}
+@media (min-width: 480px) and (max-width: 720px) {
+  .work-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* 카드 전체 */
+.work {
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
-  box-shadow: 5px 5px 0 var(--paper-deep), 5px 5px 0 1px var(--line);
-  box-sizing: border-box;
+  background: var(--paper);
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--paper-deep), 4px 4px 0 1px var(--line);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-/* 일러스트/로고 카드: contain으로 전체 보이기 */
-.work-illustration img {
+.work:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0 var(--paper-deep), 6px 6px 0 1px var(--line);
+}
+
+/* 이미지 영역 — 모든 카드 동일 높이 */
+.work-thumb {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--paper-deep);
+}
+.work-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+}
+.work:hover .work-thumb img {
+  transform: scale(1.03);
+}
+
+/* 일러스트 카드: 덕 캐릭터 잘리지 않게 */
+.work-illustration .work-thumb {
+  background: #faf9f7;
+}
+.work-illustration .work-thumb img {
   object-fit: contain;
   object-position: center;
-  background: #fdfdfb;
+  padding: 12px;
+  box-sizing: border-box;
 }
-.work h3 { margin: 18px 0 6px; font-size: 1.2em; }
-.work p { margin: 0; color: var(--muted); }
+.work-illustration:hover .work-thumb img {
+  transform: none;
+}
+
+/* 텍스트 영역 */
+.work-body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.work-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--main);
+  text-transform: uppercase;
+}
+.work h3 {
+  margin: 0;
+  font-size: 1.08rem;
+  line-height: 1.4;
+  color: var(--fg);
+}
+.work p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
 
 /* 클릭 가능한 프로젝트 카드 */
 .work-interactive {
   cursor: pointer;
-  transition: transform 0.18s ease;
 }
 .work-interactive:hover {
-  transform: translateY(-3px);
-}
-.work-interactive:hover img {
-  border-color: var(--main);
-  box-shadow: 6px 6px 0 var(--paper-deep), 6px 6px 0 1px var(--main);
+  border-color: var(--main-light);
+  box-shadow: 6px 6px 0 var(--paper-deep), 6px 6px 0 1px var(--main-light);
 }
 .work-link {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   text-decoration: none;
   color: inherit;
 }
@@ -608,14 +669,15 @@ h2::before {
   align-items: center;
   gap: 4px;
   margin-top: 10px;
-  padding: 4px 10px;
-  font-size: 0.8rem;
+  padding: 5px 12px;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--main);
   background: var(--main-bg);
   border: 1px solid var(--main-light);
   border-radius: var(--r-full);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
+  align-self: flex-start;
 }
 .work-interactive:hover .work-badge-pill {
   background: var(--main);
