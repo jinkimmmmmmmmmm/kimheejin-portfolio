@@ -563,12 +563,21 @@ h2::before {
 .work img {
   display: block;
   width: 100%;
-  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center;
   padding: 10px;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
   box-shadow: 5px 5px 0 var(--paper-deep), 5px 5px 0 1px var(--line);
+  box-sizing: border-box;
+}
+/* 일러스트/로고 카드: contain으로 전체 보이기 */
+.work-illustration img {
+  object-fit: contain;
+  object-position: center;
+  background: #fdfdfb;
 }
 .work h3 { margin: 18px 0 6px; font-size: 1.2em; }
 .work p { margin: 0; color: var(--muted); }
